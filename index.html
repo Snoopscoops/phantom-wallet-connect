@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantom Wallet Connect</title>
+    <script>
+        function isPhantomInstalled() {
+            return window.solana && window.solana.isPhantom;
+        }
+
+        async function connectPhantomWallet() {
+            try {
+                const walletResponse = await window.solana.connect();
+                const publicKey = walletResponse.publicKey.toString();
+                document.getElementById('walletStatus').innerHTML = `Connected Wallet: ${publicKey}`;
+                document.getElementById('connectButton').style.display = 'none';
+            } catch (err) {
+                console.error("Connection error:", err);
+                document.getElementById('walletStatus').innerHTML = `Connection Failed`;
+            }
+        }
+
+        window.addEventListener('load', () => {
+            const walletStatusElement = document.getElementById('walletStatus');
+            const connectButtonElement = document.getElementById('connectButton');
+
+            if (isPhantomInstalled()) {
+                connectButtonElement.style.display = 'block';
+                walletStatusElement.innerHTML = "Phantom Wallet Detected. Please connect.";
+                connectButtonElement.addEventListener('click', connectPhantomWallet);
+            } else {
+                walletStatusElement.innerHTML = "Phantom Wallet is not installed.";
+                connectButtonElement.style.display = 'none';
+            }
+        });
+    </script>
+</head>
+<body>
+    <h2 id="walletStatus">Checking for Phantom Wallet...</h2>
+    <button id="connectButton" style="display:none;">Connect Phantom Wallet</button>
+</body>
+</html>
